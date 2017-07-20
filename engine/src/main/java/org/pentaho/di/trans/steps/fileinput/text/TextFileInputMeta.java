@@ -720,8 +720,11 @@ public class TextFileInputMeta extends BaseFileInputMeta<BaseFileInputAdditional
     retval.append( "    " + XMLHandler.addTagValue( "add_to_result_filenames", inputFiles.isaddresult ) );
 
     retval.append( "    <file>" ).append( Const.CR );
+
     for ( int i = 0; i < inputFiles.fileName.length; i++ ) {
       saveSource( retval, inputFiles.fileName[i] );
+      parentStepMeta.getParentTransMeta().getNamedClusterEmbedManager().registerUrl( inputFiles.fileName[i] );
+
       retval.append( "      " ).append( XMLHandler.addTagValue( "filemask", inputFiles.fileMask[i] ) );
       retval.append( "      " ).append( XMLHandler.addTagValue( "exclude_filemask", inputFiles.excludeFileMask[i] ) );
       retval.append( "      " ).append( XMLHandler.addTagValue( "file_required", inputFiles.fileRequired[i] ) );
@@ -1288,6 +1291,7 @@ public class TextFileInputMeta extends BaseFileInputMeta<BaseFileInputAdditional
 
   protected void saveSource( StringBuilder retVal, String source ) {
     retVal.append( "      " ).append( XMLHandler.addTagValue( "name", source ) );
+
   }
 
   protected String loadSourceRep( Repository rep, ObjectId id_step, int i, IMetaStore metaStore ) throws KettleException {
@@ -1365,4 +1369,5 @@ public class TextFileInputMeta extends BaseFileInputMeta<BaseFileInputAdditional
   FileObject getFileObject( String vfsFileName, VariableSpace variableSpace ) throws KettleFileException {
     return KettleVFS.getFileObject( variableSpace.environmentSubstitute( vfsFileName ), variableSpace );
   }
+
 }

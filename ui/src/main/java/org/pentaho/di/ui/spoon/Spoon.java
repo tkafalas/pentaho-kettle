@@ -4739,6 +4739,7 @@ public class Spoon extends ApplicationWindow implements AddUndoPositionInterface
       }
       transMeta.importFromMetaStore();
       transMeta.clearChanged();
+
     } catch ( Exception e ) {
       new ErrorDialog(
         shell, BaseMessages.getString( PKG, "Spoon.Exception.ErrorReadingSharedObjects.Title" ), BaseMessages
@@ -4767,6 +4768,12 @@ public class Spoon extends ApplicationWindow implements AddUndoPositionInterface
       refreshTree();
     }
     loadPerspective( MainSpoonPerspective.ID );
+
+    try {
+      ExtensionPointHandler.callExtensionPoint( log, KettleExtensionPoint.TransformationCreateNew.id, transMeta );
+    } catch ( KettleException e ) {
+      log.logError( "Failed to call extension point", e );
+    }
   }
 
   public void newJobFile() {

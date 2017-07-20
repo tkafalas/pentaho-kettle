@@ -32,6 +32,7 @@ import org.pentaho.di.core.compress.CompressionProviderFactory;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleFileException;
 import org.pentaho.di.core.logging.LogChannelInterface;
+import org.pentaho.di.core.variables.Variables;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.di.trans.step.BaseStep;
 import org.pentaho.di.trans.step.errorhandling.AbstractFileErrorHandler;
@@ -74,6 +75,11 @@ public class TextFileInputReader implements IBaseFileInputReader {
     if ( log.isDetailed() ) {
       log.logDetailed( "This is a compressed file being handled by the " + provider.getName() + " provider" );
     }
+
+    //String metastoreProviderKey = meta.getParentStepMeta().getParentTransMeta().getEmbeddedMetastoreProviderKey();
+    //FileObject fileObject = metastoreProviderKey == null ? file : KettleVFS
+    //  .getFileObject( file.getURL().toString() + "?embeddedMetastoreKey=" + metastoreProviderKey, new Variables() );
+    //in = provider.createInputStream( KettleVFS.getInputStream( fileObject ) );
 
     in = provider.createInputStream( KettleVFS.getInputStream( file ) );
 

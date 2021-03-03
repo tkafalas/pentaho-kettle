@@ -128,3 +128,19 @@ public class MyTest {
 
 ### Asking for help
 Please go to https://community.hitachivantara.com/community/products-and-solutions/pentaho/ to ask questions and get help.
+
+### Big Data Capability Code Generation
+
+There are a collection of classes in the core sub-project under the
+ __"org.pentaho.di.capability.shim.generated"__ package that are machine generated from the 
+ __"org.pentaho.di.capability.shim.DefaultCapabilities.yaml"__ resource file.  This file serves as both a schema
+ and a definition of default values for big data capabilties associated with a shim.  Normally these classes do not need to be
+ regenerated unless the yaml file is modified.  If the yaml file is modified to add/remove default capabilties,
+ then the generated classes can be regenerated from the core directory with:
+ ```
+$ mvn compile
+$ mvn generate-sources -Pcapability-code-generator
+```
+Note that this command will begin by deleting the __org/pentaho/di/capability/shim/generated__ folder so you may want to
+backup what is there as a safety precaution, in case it fails. 
+````

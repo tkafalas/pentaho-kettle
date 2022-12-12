@@ -67,7 +67,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @MetaStoreElementType( name = "NamedCluster", description = "A NamedCluster" )
-public class NamedClusterImpl implements NamedCluster, NamedCluster {
+public class NamedClusterImpl implements NamedCluster {
 
   public static final String HDFS_SCHEME = "hdfs";
   public static final String MAPRFS_SCHEME = "maprfs";
@@ -746,10 +746,6 @@ public class NamedClusterImpl implements NamedCluster, NamedCluster {
 
   @Override public void setKafkaBootstrapServers( String kafkaBootstrapServers ) {
     this.kafkaBootstrapServers = kafkaBootstrapServers;
-  }
-
-  @Override public NamedCluster nonOsgiFromXmlForEmbed( Node node ) {
-    return (NamedCluster) fromXmlForEmbed( node );
   }
 
   public String decodePassword( String password ) {

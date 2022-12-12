@@ -93,8 +93,8 @@ public class WebServerTest {
 
     when( sServerConfMock.getSlaveServer() ).thenReturn( sServer );
     when( trMapMock.getSlaveServerConfig() ).thenReturn( sServerConfMock );
-    when( sServer.getPassword() ).thenReturn( "cluster" );
-    when( sServer.getUsername() ).thenReturn( "cluster" );
+    when( sServer.getPassword() ).thenReturn( "org/pentaho/big/data/impl/cluster" );
+    when( sServer.getUsername() ).thenReturn( "org/pentaho/big/data/impl/cluster" );
     webServer =
         new WebServer( logMock, trMapMock, jbMapMock, sRepoMock, detections, HOST_NAME, PORT, SHOULD_JOIN, null );
     defServerConnector = new ServerConnector(webServer.getServer(), -1, -1);

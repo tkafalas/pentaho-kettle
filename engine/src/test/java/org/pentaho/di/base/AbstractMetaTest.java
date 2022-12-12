@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.pentaho.big.data.impl.cluster.NamedClusterManager;
 import org.pentaho.di.cluster.SlaveServer;
 import org.pentaho.di.core.NotePadMeta;
 import org.pentaho.di.core.Props;
@@ -46,7 +47,6 @@ import org.pentaho.di.core.logging.ChannelLogTable;
 import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.core.logging.LoggingObjectType;
 import org.pentaho.di.core.osgi.api.MetastoreLocatorOsgi;
-import org.pentaho.di.core.osgi.api.NamedClusterServiceOsgi;
 import org.pentaho.di.core.parameters.NamedParams;
 import org.pentaho.di.core.parameters.NamedParamsDefault;
 import org.pentaho.di.core.plugins.DatabasePluginType;
@@ -755,10 +755,10 @@ public class AbstractMetaTest {
 
   @Test
   public void testGetSetNamedClusterServiceOsgi() throws Exception {
-    assertNull( meta.getNamedClusterServiceOsgi() );
-    NamedClusterServiceOsgi mockNamedClusterOsgi = mock( NamedClusterServiceOsgi.class );
-    meta.setNamedClusterServiceOsgi( mockNamedClusterOsgi );
-    assertEquals( mockNamedClusterOsgi, meta.getNamedClusterServiceOsgi() );
+    assertNull( meta.getNamedClusterManager() );
+    NamedClusterManager mockNamedClusterManager = mock( NamedClusterManager.class );
+    meta.setNamedClusterManager( mockNamedClusterManager );
+    assertEquals( mockNamedClusterManager, meta.getNamedClusterManager() );
   }
 
   @Test

@@ -149,4 +149,5 @@ public interface NamedClusterService {
    * @param metastore the IMetaStore being disposed.
    */
   void close( IMetaStore metastore );
+
 }

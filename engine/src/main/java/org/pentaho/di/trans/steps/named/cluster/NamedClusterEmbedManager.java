@@ -21,10 +21,10 @@
  ******************************************************************************/
 package org.pentaho.di.trans.steps.named.cluster;
 
+import org.pentaho.big.data.impl.cluster.NamedClusterManager;
 import org.pentaho.di.base.AbstractMeta;
 import org.pentaho.di.core.logging.LogChannelInterface;
-import org.pentaho.di.core.osgi.api.NamedClusterOsgi;
-import org.pentaho.di.core.osgi.api.NamedClusterServiceOsgi;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.metastore.api.exceptions.MetaStoreException;
 import org.pentaho.metastore.persist.MetaStoreFactory;
@@ -61,7 +61,7 @@ public class NamedClusterEmbedManager {
   private static final int PARSE_URL_PATH = 3; //Will include query if any
 
   protected static MetaStoreFactory testMetaStoreFactory; //For unit tests
-  private MetaStoreFactory<NamedClusterOsgi> embeddedMetaStoreFactory;
+  private MetaStoreFactory<NamedCluster> embeddedMetaStoreFactory;
   private AbstractMeta meta;
   private LogChannelInterface log;
   private boolean addedAllClusters;
@@ -70,7 +70,7 @@ public class NamedClusterEmbedManager {
   // Pool of Named Clusters that have been used in the embeddedMetastore, we keep them here so we can rebuild the
   // embedded metastore as needed when the nc: url is changed, even if the user doesn't have the named clusters
   // available.
-  private HashMap<String, NamedClusterOsgi> namedClusterPool = new HashMap<String, NamedClusterOsgi>();
+  private HashMap<String, NamedCluster> namedClusterPool = new HashMap<String, NamedCluster>();
 
 
   /**
@@ -81,15 +81,15 @@ public class NamedClusterEmbedManager {
   public NamedClusterEmbedManager( AbstractMeta meta, LogChannelInterface log ) {
     this.meta = meta;
     this.log = log;
-    NamedClusterServiceOsgi ncso = meta.getNamedClusterServiceOsgi();
-    if ( ncso == null ) {
+    NamedClusterManager ncs = meta.getNamedClusterManager();
+    if ( ncs == null ) {
       //throw new IllegalArgumentException( "Meta does not contain a NamedClusterService" );
       embeddedMetaStoreFactory = null; // Should only happen from test classes
       return;
     }
     if ( testMetaStoreFactory == null ) {
       embeddedMetaStoreFactory =
-        new MetaStoreFactory( ncso.getClusterTemplate().getClass(), meta.getEmbeddedMetaStore(), NAMESPACE );
+        new MetaStoreFactory( ncs.getClusterTemplate().getClass(), meta.getEmbeddedMetaStore(), NAMESPACE );
     } else {
       embeddedMetaStoreFactory = testMetaStoreFactory;
     }
@@ -130,16 +130,16 @@ public class NamedClusterEmbedManager {
    * Clear the embedded metastore of any named clusters
    */
   public void clear() {
-    NamedClusterServiceOsgi ncso = meta.getNamedClusterServiceOsgi();
-    if ( ncso != null ) {  //Don't kill the embedded if we don't have the service to rebuild
+    NamedClusterManager ncs = meta.getNamedClusterManager();
+    if ( ncs != null ) {  //Don't kill the embedded if we don't have the service to rebuild
       addedAllClusters = false;
       addedAnyClusters = false;
       // The embeddedMetaStoreFactory may be null if creating a brand new job and attempting to run before it ever
       // saved.
       if ( embeddedMetaStoreFactory != null ) {
         try {
-          List<NamedClusterOsgi> list = embeddedMetaStoreFactory.getElements();
-          for ( NamedClusterOsgi nc : list ) {
+          List<NamedCluster> list = embeddedMetaStoreFactory.getElements();
+          for ( NamedCluster nc : list ) {
             namedClusterPool.put( nc.getName(), nc );
             embeddedMetaStoreFactory.deleteElement( nc.getName() );
           }
@@ -155,9 +155,9 @@ public class NamedClusterEmbedManager {
   }
 
   public void addClusterToMeta( String clusterName ) {
-    NamedClusterServiceOsgi ncso = meta.getNamedClusterServiceOsgi();
-    if ( ncso != null ) {
-      NamedClusterOsgi nc = ncso.getNamedClusterByName( clusterName, meta.getMetaStore() );
+    NamedClusterManager ncs = meta.getNamedClusterManager();
+    if ( ncs != null ) {
+      NamedCluster nc = ncs.getNamedClusterByName( clusterName, meta.getMetaStore() );
       if ( nc == null ) {
         nc = namedClusterPool.get( clusterName ); // The local metastore doesn't have it.  Recover from pool
       }
@@ -167,7 +167,7 @@ public class NamedClusterEmbedManager {
     }
   }
 
-  private void addClusterToMeta( NamedClusterOsgi nc ) {
+  private void addClusterToMeta( NamedCluster nc ) {
     try {
       if ( embeddedMetaStoreFactory.loadElement( nc.getName() ) == null ) {
         embeddedMetaStoreFactory.saveElement( nc );
@@ -179,14 +179,14 @@ public class NamedClusterEmbedManager {
   }
 
   private void addAllClusters() {
-    NamedClusterServiceOsgi ncso = meta.getNamedClusterServiceOsgi();
-    if ( ncso != null && meta.getMetaStore() != null ) {
+    NamedClusterManager ncs = meta.getNamedClusterManager();
+    if ( ncs != null && meta.getMetaStore() != null ) {
       try {
-        List<String> list = ncso.listNames( meta.getMetaStore() );
+        List<String> list = ncs.listNames( meta.getMetaStore() );
         for ( String name : list ) {
           addClusterToMeta( name );
         }
-        for ( NamedClusterOsgi nc : namedClusterPool.values() ) {
+        for ( NamedCluster nc : namedClusterPool.values() ) {
           if ( !list.contains( nc.getName() ) ) {
             addClusterToMeta( nc );
           }

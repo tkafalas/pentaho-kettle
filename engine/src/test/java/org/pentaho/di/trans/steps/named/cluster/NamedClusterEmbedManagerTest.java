@@ -23,10 +23,10 @@ package org.pentaho.di.trans.steps.named.cluster;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.pentaho.big.data.impl.cluster.NamedClusterManager;
 import org.pentaho.di.base.AbstractMeta;
 import org.pentaho.di.core.logging.LogChannelInterface;
-import org.pentaho.di.core.osgi.api.NamedClusterOsgi;
-import org.pentaho.di.core.osgi.api.NamedClusterServiceOsgi;
+import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.di.core.variables.Variables;
 import org.pentaho.metastore.api.IMetaStore;
 import org.pentaho.metastore.api.exceptions.MetaStoreException;
@@ -54,10 +54,10 @@ public class NamedClusterEmbedManagerTest {
   private AbstractMeta mockMeta;
   private NamedClusterEmbedManager namedClusterEmbedManager;
   private LogChannelInterface mockLog;
-  private NamedClusterOsgi mockNamedCluster1;
-  private NamedClusterOsgi mockNamedCluster2;
+  private NamedCluster mockNamedCluster1;
+  private NamedCluster mockNamedCluster2;
   private MetaStoreFactory mockMetaStoreFactory;
-  NamedClusterServiceOsgi mockNamedClusterService;
+  NamedClusterManager mockNamedClusterManager;
 
   @Before
   public void setUp() {
@@ -66,16 +66,16 @@ public class NamedClusterEmbedManagerTest {
     mockMetaStoreFactory = mock( MetaStoreFactory.class );
     NamedClusterEmbedManager.testMetaStoreFactory = mockMetaStoreFactory;
     IMetaStore mockMetaStore = mock( IMetaStore.class );
-    mockNamedCluster1 = mock( NamedClusterOsgi.class );
-    mockNamedCluster2 = mock( NamedClusterOsgi.class );
+    mockNamedCluster1 = mock( NamedCluster.class );
+    mockNamedCluster2 = mock( NamedCluster.class );
     when( mockNamedCluster1.getName() ).thenReturn( CLUSTER1_NAME );
     when( mockNamedCluster2.getName() ).thenReturn( CLUSTER2_NAME );
-    mockNamedClusterService = mock( NamedClusterServiceOsgi.class );
-    when( mockMeta.getNamedClusterServiceOsgi() ).thenReturn( mockNamedClusterService );
+    mockNamedClusterManager = mock( NamedClusterManager.class );
+    when( mockMeta.getNamedClusterManager() ).thenReturn( mockNamedClusterManager );
     when( mockMeta.getMetaStore() ).thenReturn( mockMetaStore );
-    when( mockNamedClusterService.getClusterTemplate() ).thenReturn( mock( NamedClusterOsgi.class ) );
-    when( mockNamedClusterService.getNamedClusterByName( eq( CLUSTER1_NAME ), any() ) ).thenReturn( mockNamedCluster1 );
-    when( mockNamedClusterService.getNamedClusterByName( eq( CLUSTER2_NAME ), any() ) ).thenReturn( mockNamedCluster2 );
+    when( mockNamedClusterManager.getClusterTemplate() ).thenReturn( mock( NamedCluster.class ) );
+    when( mockNamedClusterManager.getNamedClusterByName( eq( CLUSTER1_NAME ), any() ) ).thenReturn( mockNamedCluster1 );
+    when( mockNamedClusterManager.getNamedClusterByName( eq( CLUSTER2_NAME ), any() ) ).thenReturn( mockNamedCluster2 );
 
     namedClusterEmbedManager = new NamedClusterEmbedManager( mockMeta, mockLog );
   }
@@ -100,7 +100,7 @@ public class NamedClusterEmbedManagerTest {
 
   @Test
   public void testRegisterUrlFullVariable() throws Exception {
-    when( mockNamedClusterService.listNames( mockMeta.getMetaStore() ) )
+    when( mockNamedClusterManager.listNames( mockMeta.getMetaStore() ) )
       .thenReturn( Arrays.asList( new String[] { CLUSTER1_NAME, CLUSTER2_NAME } ) );
 
     namedClusterEmbedManager.registerUrl( "${variable)" );
@@ -111,7 +111,7 @@ public class NamedClusterEmbedManagerTest {
 
   @Test
   public void testRegisterUrlClusterVariable() throws Exception {
-    when( mockNamedClusterService.listNames( mockMeta.getMetaStore() ) )
+    when( mockNamedClusterManager.listNames( mockMeta.getMetaStore() ) )
       .thenReturn( Arrays.asList( new String[] { CLUSTER1_NAME, CLUSTER2_NAME } ) );
 
     namedClusterEmbedManager.registerUrl( "hc://${variable)/dir1/file" );
@@ -129,7 +129,7 @@ public class NamedClusterEmbedManagerTest {
   @Test
   public void testClear() throws Exception {
     when( mockMetaStoreFactory.getElements() )
-      .thenReturn( Arrays.asList( new NamedClusterOsgi[] { mockNamedCluster1, mockNamedCluster2 } ) );
+      .thenReturn( Arrays.asList( new NamedCluster[] { mockNamedCluster1, mockNamedCluster2 } ) );
 
     namedClusterEmbedManager.clear( );
     verify( mockMetaStoreFactory ).deleteElement( CLUSTER1_NAME );

@@ -26,6 +26,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
+import org.pentaho.big.data.impl.cluster.NamedClusterManager;
 import org.pentaho.di.cluster.SlaveServer;
 import org.pentaho.di.core.AttributesInterface;
 import org.pentaho.di.core.Const;
@@ -53,7 +54,6 @@ import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.core.logging.LoggingObjectInterface;
 import org.pentaho.di.core.osgi.api.MetastoreLocatorOsgi;
-import org.pentaho.di.core.osgi.api.NamedClusterServiceOsgi;
 import org.pentaho.di.core.parameters.DuplicateParamException;
 import org.pentaho.di.core.parameters.NamedParams;
 import org.pentaho.di.core.parameters.NamedParamsDefault;
@@ -175,7 +175,7 @@ public abstract class AbstractMeta implements ChangedFlagInterface, UndoInterfac
 
   protected Date createdDate, modifiedDate;
 
-  protected NamedClusterServiceOsgi namedClusterServiceOsgi;
+  protected NamedClusterManager namedClusterManager = NamedClusterManager.getInstance();
 
   protected MetastoreLocatorOsgi metastoreLocatorOsgi;
 
@@ -2054,12 +2054,12 @@ public abstract class AbstractMeta implements ChangedFlagInterface, UndoInterfac
     return Objects.hash( name, inRepo, inRepo ? filename : getRepositoryDirectory().getPath() );
   }
 
-  public NamedClusterServiceOsgi getNamedClusterServiceOsgi() {
-    return namedClusterServiceOsgi;
+  public NamedClusterManager getNamedClusterManager() {
+    return namedClusterManager;
   }
 
-  public void setNamedClusterServiceOsgi( NamedClusterServiceOsgi namedClusterServiceOsgi ) {
-    this.namedClusterServiceOsgi = namedClusterServiceOsgi;
+  public void setNamedClusterManager( NamedClusterManager namedClusterManager ) {
+    this.namedClusterManager = namedClusterManager;
   }
 
   public MetastoreLocatorOsgi getMetastoreLocatorOsgi() {

@@ -36,4 +36,5 @@ public interface Entity {
   Date getDate();
   boolean isCanEdit();
   boolean isCanDelete();
+  EntityType getEntityType();
 }

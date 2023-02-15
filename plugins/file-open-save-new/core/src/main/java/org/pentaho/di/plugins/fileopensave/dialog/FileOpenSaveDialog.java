@@ -46,6 +46,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.MouseAdapter;
@@ -98,6 +100,10 @@ import org.pentaho.di.plugins.fileopensave.api.providers.Utils;
 import org.pentaho.di.plugins.fileopensave.api.providers.exception.FileException;
 import org.pentaho.di.plugins.fileopensave.api.providers.exception.InvalidFileProviderException;
 import org.pentaho.di.plugins.fileopensave.controllers.FileController;
+import org.pentaho.di.plugins.fileopensave.dragdrop.ElementDragListener;
+import org.pentaho.di.plugins.fileopensave.dragdrop.ElementTableDropAdapter;
+import org.pentaho.di.plugins.fileopensave.dragdrop.ElementTransfer;
+import org.pentaho.di.plugins.fileopensave.dragdrop.ElementTreeDropAdapter;
 import org.pentaho.di.plugins.fileopensave.providers.local.model.LocalFile;
 import org.pentaho.di.plugins.fileopensave.providers.recents.model.RecentTree;
 import org.pentaho.di.plugins.fileopensave.providers.repository.model.RepositoryFile;
@@ -1099,7 +1105,7 @@ public class FileOpenSaveDialog extends Dialog implements FileDetails {
     return file;
   }
 
-  private void refreshDisplay( SelectionEvent selectionEvent ) {
+  public void refreshDisplay( SelectionEvent selectionEvent ) {
     StructuredSelection fileTableViewerSelection = (StructuredSelection) ( fileTableViewer.getSelection() );
     TreeSelection treeViewerSelection = (TreeSelection) ( treeViewer.getSelection() );
     FileProvider fileProvider = null;
@@ -1180,14 +1186,20 @@ public class FileOpenSaveDialog extends Dialog implements FileDetails {
     PropsUI.getInstance().setLook( sashForm );
     sashForm.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
 
-    treeViewer = new TreeViewer( sashForm, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.FULL_SELECTION );
+    treeViewer = new TreeViewer( sashForm, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.FULL_SELECTION | SWT.MULTI );
     PropsUI.getInstance().setLook( treeViewer.getTree() );
+    // Add drag/drop support
+    Transfer[] transfers = new ElementTransfer[] { ElementTransfer.getInstance() };
+    int ops = DND.DROP_COPY | DND.DROP_MOVE;
+
+    treeViewer.addDragSupport( ops, transfers, new ElementDragListener( treeViewer, this ) );
+    treeViewer.addDropSupport( ops, transfers, new ElementTreeDropAdapter( treeViewer ) );
 
     treeViewer.setLabelProvider( labelProvider );
 
     treeViewer.setContentProvider( new FileTreeContentProvider( FILE_CONTROLLER, this ) );
 
-    // Load the various file types on the left
+    // Load the various tree types on the left
     treeViewer.setInput( FILE_CONTROLLER.load( providerFilter ).toArray() );
 
     treeViewer.addPostSelectionChangedListener( e -> {
@@ -1199,6 +1211,7 @@ public class FileOpenSaveDialog extends Dialog implements FileDetails {
         treeViewer.refresh( selectedNode, true );
         treeViewer.setExpandedState( selectedNode, true );
       }
+
       // Update the path that is selected
       selectPath( selectedNode );
       // Clears the selection from fileTableViewer
@@ -1207,6 +1220,7 @@ public class FileOpenSaveDialog extends Dialog implements FileDetails {
       if ( selectionHistory != null ) {
         flatBtnBack.setEnabled( currentHistoryIndex != 0 );
       }
+
       processState();
     } );
 
@@ -1222,6 +1236,10 @@ public class FileOpenSaveDialog extends Dialog implements FileDetails {
     } );
 
     fileTableViewer = new TableViewer( sashForm, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.FULL_SELECTION );
+    // Add drag/drop support
+    fileTableViewer.addDragSupport( ops, transfers, new ElementDragListener( fileTableViewer, this ) );
+    //fileTableViewer.addDropSupport( ops, transfers, new ElementTableDropAdapter( fileTableViewer ) );
+
     PropsUI.getInstance().setLook( fileTableViewer.getTable() );
     fileTableViewer.getTable().setHeaderVisible( true );
     Menu fileTableMenu = new Menu( fileTableViewer.getTable() );

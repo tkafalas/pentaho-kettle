@@ -60,6 +60,22 @@
       <groupId>org.eclipse.swt</groupId>
       <artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.ui.workbench</artifactId>
+      <version>3.127.0</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>javax.annotation-api</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.resources</artifactId>
+      <version>3.7.100</version>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>

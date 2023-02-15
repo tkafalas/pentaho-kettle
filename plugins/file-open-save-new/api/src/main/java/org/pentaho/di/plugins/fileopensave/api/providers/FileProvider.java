@@ -22,6 +22,7 @@
 
 package org.pentaho.di.plugins.fileopensave.api.providers;
 
+import org.apache.commons.vfs2.FileObject;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.core.exception.KettleFileException;
 import org.pentaho.di.plugins.fileopensave.api.file.FileDetails;
@@ -61,6 +62,16 @@ public interface FileProvider<T extends File> {
     return getTree();
   }
 
+  /**
+   * Works kind of like a resolve.  It will return a mewly created file object if the file received exists physically,
+   * or null if the file specified does not exist.
+   *
+   * @param file
+   * @param filters
+   * @param space
+   * @return
+   * @throws FileException
+   */
   List<T> getFiles( T file, String filters, VariableSpace space ) throws FileException;
 
   List<T> searchFiles( T file, String filters, String searchString, VariableSpace space ) throws FileException;
@@ -87,7 +98,8 @@ public interface FileProvider<T extends File> {
 
   InputStream readFile( T file, VariableSpace space ) throws FileException;
 
-  T writeFile( InputStream inputStream, T destDir, String path, boolean overwrite, VariableSpace space ) throws FileException;
+  T writeFile( InputStream inputStream, T destDir, String path, boolean overwrite, VariableSpace space )
+    throws FileException, KettleFileException;
 
   T getParent( T file );
 
@@ -96,7 +108,12 @@ public interface FileProvider<T extends File> {
   void setFileProperties( FileDetails fileDetails, FileDialogOperation fileDialogOperation );
 
 
-  default T createDirectory( String parentPath, T file, String newDirectoryName ) throws FileException, KettleFileException {
+  default T createDirectory( String parentPath, T file, String newDirectoryName )
+    throws FileException, KettleFileException {
+    throw new UnsupportedOperationException();
+  }
+
+  default T getFile( String path, boolean isDirectory ) {
     throw new UnsupportedOperationException();
   }
 }

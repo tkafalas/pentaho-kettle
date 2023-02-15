@@ -478,6 +478,7 @@ public class LocalFileProvider extends BaseFileProvider<LocalFile> {
   }
 
   @Override public LocalFile getFile( LocalFile file, VariableSpace space ) {
+     Paths.get( file.getPath() );
     return null;
   }
 }

@@ -52,8 +52,8 @@ public class FileCache {
   }
 
   public boolean addFile( File parent, File file ) {
-    if ( fileCache.containsKey( parent ) ) {
-      fileCache.get( parent ).add( file );
+    if ( fileCache.containsKey( parent ) && !fileCache.containsKey( file ) ) {
+        fileCache.get( parent ).add( file );
     }
     return false;
   }

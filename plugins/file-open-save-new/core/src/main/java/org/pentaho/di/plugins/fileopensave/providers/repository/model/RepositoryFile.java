@@ -24,6 +24,7 @@ package org.pentaho.di.plugins.fileopensave.providers.repository.model;
 
 import org.apache.commons.lang.StringUtils;
 import org.pentaho.di.core.LastUsedFile;
+import org.pentaho.di.plugins.fileopensave.api.providers.EntityType;
 import org.pentaho.di.plugins.fileopensave.api.providers.File;
 import org.pentaho.di.plugins.fileopensave.api.providers.Utils;
 import org.pentaho.di.plugins.fileopensave.providers.recents.RecentFileProvider;
@@ -149,5 +150,9 @@ public class RepositoryFile extends RepositoryObject implements File {
   // so that we don't need to use this method
   public boolean passesTypeFilter( String filter ) {
     return Utils.matches( getName() + ( TRANSFORMATION.equalsIgnoreCase( getType() ) ? KTR : KJB ), filter );
+  }
+
+  public EntityType getEntityType(){
+    return EntityType.REPOSITORY_FILE;
   }
 }

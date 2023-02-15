@@ -22,6 +22,7 @@
 
 package org.pentaho.di.plugins.fileopensave.providers.repository.model;
 
+import org.pentaho.di.plugins.fileopensave.api.providers.EntityType;
 import org.pentaho.di.repository.RepositoryDirectoryInterface;
 import org.pentaho.di.plugins.fileopensave.api.providers.Directory;
 import org.pentaho.di.plugins.fileopensave.providers.repository.RepositoryFileProvider;
@@ -83,5 +84,9 @@ public class RepositoryDirectory extends RepositoryFile implements Directory {
 
   public void setCanAddChildren( boolean canAddChildren ) {
     this.canAddChildren = canAddChildren;
+  }
+
+  public EntityType getEntityType(){
+    return EntityType.REPOSITORY_DIRECTORY;
   }
 }

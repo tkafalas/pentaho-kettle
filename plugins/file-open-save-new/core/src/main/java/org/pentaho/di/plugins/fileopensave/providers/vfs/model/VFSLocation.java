@@ -22,6 +22,8 @@
 
 package org.pentaho.di.plugins.fileopensave.providers.vfs.model;
 
+import org.pentaho.di.plugins.fileopensave.api.providers.EntityType;
+
 /**
  * Created by bmorrise on 2/14/19.
  */
@@ -35,4 +37,7 @@ public class VFSLocation extends VFSDirectory {
     return false;
   }
 
+  public EntityType getEntityType(){
+    return EntityType.VFS_LOCATION;
+  }
 }

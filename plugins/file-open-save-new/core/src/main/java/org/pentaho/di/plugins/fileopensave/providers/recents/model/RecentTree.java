@@ -22,6 +22,7 @@
 
 package org.pentaho.di.plugins.fileopensave.providers.recents.model;
 
+import org.pentaho.di.plugins.fileopensave.api.providers.EntityType;
 import org.pentaho.di.plugins.fileopensave.api.providers.Tree;
 import org.pentaho.di.plugins.fileopensave.providers.recents.RecentFileProvider;
 

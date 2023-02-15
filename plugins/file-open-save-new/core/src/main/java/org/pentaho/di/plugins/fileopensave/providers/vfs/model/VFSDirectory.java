@@ -26,6 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.pentaho.di.plugins.fileopensave.api.providers.Directory;
+import org.pentaho.di.plugins.fileopensave.api.providers.EntityType;
 import org.pentaho.di.plugins.fileopensave.providers.vfs.VFSFileProvider;
 
 import java.util.ArrayList;
@@ -121,5 +122,9 @@ public class VFSDirectory extends VFSFile implements Directory {
     return compare.getProvider().equals( getProvider() )
       && StringUtils.equals( compare.getConnection(), getConnection() )
       && StringUtils.equals( compare.getPath(), getPath() );
+  }
+
+  public EntityType getEntityType(){
+    return EntityType.VFS_DIRECTORY;
   }
 }

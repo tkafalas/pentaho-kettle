@@ -42,4 +42,8 @@ public interface Tree<T extends Entity> extends Providerable {
   default boolean isCanDelete() {
     return false;
   }
+
+  default EntityType getEntityType(){
+    return EntityType.TREE;
+  }
 }

@@ -37,6 +37,7 @@ public class BaseEntity implements Entity, Providerable {
   private Date date;
   private boolean canEdit = false;
   private boolean canDelete = false;
+  private EntityType entityType;
 
   @Override public String getProvider() {
     return provider;
@@ -109,5 +110,9 @@ public class BaseEntity implements Entity, Providerable {
 
   public void setCanDelete( boolean canDelete ) {
     this.canDelete = canDelete;
+  }
+
+  public EntityType getEntityType(){
+    return EntityType.UNKNOWN;
   }
 }

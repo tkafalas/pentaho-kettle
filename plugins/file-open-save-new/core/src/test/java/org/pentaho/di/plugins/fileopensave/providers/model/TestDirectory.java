@@ -23,6 +23,7 @@
 package org.pentaho.di.plugins.fileopensave.providers.model;
 
 import org.pentaho.di.plugins.fileopensave.api.providers.Directory;
+import org.pentaho.di.plugins.fileopensave.api.providers.EntityType;
 import org.pentaho.di.plugins.fileopensave.providers.TestFileProvider;
 
 import java.util.Date;
@@ -43,4 +44,7 @@ public class TestDirectory extends TestFile implements Directory {
     return testDirectory;
   }
 
+  public EntityType getEntityType(){
+    return EntityType.TEST_DIRECTORY;
+  }
 }

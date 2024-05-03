@@ -212,4 +212,11 @@ public interface PluginInterface {
     }
     return pluginProps;
   }
+
+  default String getParentPluginPath() {
+    return "";
+  }
+
+  default void setParentPluginPath( String parentPluginPath ) { }
+
 }

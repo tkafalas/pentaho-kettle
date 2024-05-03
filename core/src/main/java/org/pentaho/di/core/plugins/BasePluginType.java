@@ -784,6 +784,11 @@ public abstract class BasePluginType implements PluginTypeInterface {
         classLoaderGroup, nativePluginType, classMap, libraries, null, pluginFolder, documentationUrl,
         casesUrl, forumUrl, suggestion );
 
+    ParentPlugin parentPluginAnnotation = clazz.getAnnotation( ParentPlugin.class );
+    if ( parentPluginAnnotation != null ) {
+      plugin.setParentPluginPath( parentPluginAnnotation.pathFromDataIntegration() );
+    }
+
     ParentFirst parentFirstAnnotation = clazz.getAnnotation( ParentFirst.class );
     if ( parentFirstAnnotation != null ) {
       registry.addParentClassLoaderPatterns( plugin, parentFirstAnnotation.patterns() );
